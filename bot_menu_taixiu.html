@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Tool Tài Xỉu</title>
+<title>Bot Menu Tool</title>
 
 <style>
 html,body{
@@ -19,19 +19,28 @@ html,body{
 /* MENU NỔI */
 #menu{
   position:fixed;
-  top:20px;
-  right:15px;
+  top:80px;
+  left:20px;
   background:#020617;
   padding:12px;
   border-radius:14px;
-  width:170px;
-  box-shadow:0 0 15px #000;
+  width:180px;
+  box-shadow:0 0 18px #000;
   z-index:9999;
+  touch-action:none;
 }
 
-#info{margin-top:6px;font-size:14px;}
-#streak{margin-top:6px;font-size:15px;font-weight:bold;}
-#trend{margin-top:6px;font-size:14px;}
+#header{
+  font-weight:bold;
+  cursor:move;
+  text-align:center;
+  margin-bottom:6px;
+}
+
+#info,#streak,#trend{
+  margin-top:6px;
+  font-size:14px;
+}
 
 button{
   width:100%;
@@ -51,7 +60,7 @@ button{
 <body>
 
 <div id="menu">
-  <b>🎲 TOOL TÀI XỈU</b>
+  <div id="header">🤖 BOT MENU</div>
   <div id="info">Tài: 0% | Xỉu: 0%</div>
   <div id="streak">Streak: -</div>
   <div id="trend">Chưa có dữ liệu</div>
@@ -63,6 +72,21 @@ button{
 
 <script>
 let history=[];
+const menu=document.getElementById("menu");
+let offsetX, offsetY, dragging=false;
+
+// kéo menu
+menu.addEventListener("touchstart", e=>{
+  dragging=true;
+  offsetX=e.touches[0].clientX-menu.offsetLeft;
+  offsetY=e.touches[0].clientY-menu.offsetTop;
+});
+menu.addEventListener("touchmove", e=>{
+  if(!dragging) return;
+  menu.style.left=(e.touches[0].clientX-offsetX)+"px";
+  menu.style.top =(e.touches[0].clientY-offsetY)+"px";
+});
+menu.addEventListener("touchend", ()=>dragging=false);
 
 function add(v){
   history.push(v);
@@ -86,7 +110,6 @@ function update(){
 
   info.innerText=`Tài: ${pt}% | Xỉu: ${px}%`;
 
-  // streak
   let s=1;
   for(let i=history.length-1;i>0;i--){
     if(history[i]==history[i-1]) s++;
@@ -109,11 +132,7 @@ function update(){
     trend.style.color="#eab308";
   }
 
-  if(s>=3){
-    streak.style.color="#f472b6";
-  }else{
-    streak.style.color="white";
-  }
+  streak.style.color = s>=3 ? "#f472b6" : "white";
 }
 </script>
 
